@@ -77,12 +77,24 @@ def create_app():
         # Otherwise, return the HTML template
         return render_template('rate_limit_error.html', message=str(e)), 429
 
+    @app.errorhandler(400)
+    def bad_request_error(error):
+        flash('Bad request. Please check your input and try again.', 'warning')
+        return render_template('400.html'), 400
+
+    @app.errorhandler(403)
+    def forbidden_error(error):
+        flash('You do not have permission to access this resource.', 'warning')
+        return render_template('403.html'), 403
+
     @app.errorhandler(404)
     def not_found_error(error):
+        flash('The page you are looking for was not found.', 'warning')
         return render_template('404.html'), 404
 
     @app.errorhandler(500)
     def internal_error(error):
+        flash('An unexpected error occurred. Please try again later.', 'danger')
         return render_template('500.html'), 500
 
     @app.before_request
