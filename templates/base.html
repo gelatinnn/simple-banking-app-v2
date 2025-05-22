@@ -79,30 +79,30 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top" role="navigation" aria-label="Main Navigation">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">IMT BANK</a>
+            <a class="navbar-brand" href="{{ url_for('index') }}" aria-label="IMT BANK Home">IMT BANK</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                        <a class="nav-link" href="{{ url_for('about') }}" aria-label="About">About</a>
                     </li>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                        <a class="nav-link" href="{{ url_for('index') }}" aria-label="Home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('account') }}">Account</a>
+                        <a class="nav-link" href="{{ url_for('account') }}" aria-label="Account">Account</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('transfer') }}">Transfer</a>
+                        <a class="nav-link" href="{{ url_for('transfer') }}" aria-label="Transfer">Transfer</a>
                     </li>
                     {% if current_user.is_manager %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="managerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="managerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Manager Menu">
                             Manager
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="managerDropdown">
@@ -116,7 +116,7 @@
                     </li>
                     {% elif current_user.is_admin %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}" aria-label="Admin Dashboard">Admin Dashboard</a>
                     </li>
                     {% endif %}
                     {% endif %}
@@ -124,30 +124,30 @@
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <span class="nav-link">
+                        <span class="nav-link" aria-label="Current user: {{ current_user.username }}">
                             {{ current_user.username }}
                             {% if current_user.is_manager %}
-                            <span class="badge bg-danger account-badge">Manager</span>
+                            <span class="badge bg-danger account-badge" aria-label="Manager">Manager</span>
                             {% elif current_user.is_admin %}
-                            <span class="badge bg-warning text-dark account-badge">Admin</span>
+                            <span class="badge bg-warning text-dark account-badge" aria-label="Admin">Admin</span>
                             {% elif current_user.status == 'active' %}
-                            <span class="badge bg-success account-badge">Active</span>
+                            <span class="badge bg-success account-badge" aria-label="Active">Active</span>
                             {% elif current_user.status == 'deactivated' %}
-                            <span class="badge bg-danger account-badge">Deactivated</span>
+                            <span class="badge bg-danger account-badge" aria-label="Deactivated">Deactivated</span>
                             {% else %}
-                            <span class="badge bg-secondary account-badge">Pending</span>
+                            <span class="badge bg-secondary account-badge" aria-label="Pending">Pending</span>
                             {% endif %}
                         </span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        <a class="nav-link" href="{{ url_for('logout') }}" aria-label="Logout">Logout</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        <a class="nav-link" href="{{ url_for('login') }}" aria-label="Login">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                        <a class="nav-link" href="{{ url_for('register') }}" aria-label="Register">Register</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -155,10 +155,10 @@
         </div>
     </nav>
 
-    <div class="container mt-4 content">
+    <div class="container mt-4 content" role="main">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-        <div class="flash-messages">
+        <div class="flash-messages" aria-live="polite">
             {% for message in messages %}
             <div class="alert alert-info alert-dismissible fade show" role="alert">
                 {{ message }}
@@ -173,29 +173,29 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4 mb-md-0">
                     <h5>IMT BANK</h5>
                     <p class="mb-3">A secure and user-friendly banking application designed for simplicity and reliability.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-twitter"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
-                        <a href="#"><i class="bi bi-github"></i></a>
+                    <div class="social-icons" aria-label="Social Media Links">
+                        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="bi bi-github"></i></a>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4 mb-md-0">
                     <h5>Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('about') }}">About Us</a></li>
+                        <li><a href="{{ url_for('about') }}" aria-label="About Us">About Us</a></li>
                         {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('account') }}">My Account</a></li>
-                        <li><a href="{{ url_for('transfer') }}">Transfer Money</a></li>
+                        <li><a href="{{ url_for('account') }}" aria-label="My Account">My Account</a></li>
+                        <li><a href="{{ url_for('transfer') }}" aria-label="Transfer Money">Transfer Money</a></li>
                         {% else %}
-                        <li><a href="{{ url_for('login') }}">Login</a></li>
-                        <li><a href="{{ url_for('register') }}">Register</a></li>
+                        <li><a href="{{ url_for('login') }}" aria-label="Login">Login</a></li>
+                        <li><a href="{{ url_for('register') }}" aria-label="Register">Register</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -216,8 +216,8 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <p class="mb-0">
-                        <a href="#">Privacy Policy</a> | 
-                        <a href="#">Terms of Service</a>
+                        <a href="#" aria-label="Privacy Policy">Privacy Policy</a> | 
+                        <a href="#" aria-label="Terms of Service">Terms of Service</a>
                     </p>
                 </div>
             </div>
@@ -229,4 +229,4 @@
     
     {% block scripts %}{% endblock %}
 </body>
-</html> 
+</html>
