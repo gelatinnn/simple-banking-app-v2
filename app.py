@@ -1,11 +1,14 @@
 import os
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+import secrets
+import pymysql
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from itsdangerous import URLSafeTimedSerializer
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter.errors import RateLimitExceeded
+from datetime import timedelta
 
 # Import extensions
 from extensions import db, login_manager, bcrypt, limiter
@@ -56,7 +59,7 @@ def create_app():
     app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'  # Prevent CSRF via cross-site requests
 
     # Set session timeout (30 minutes of inactivity)
-    app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 1800 seconds = 30 minutes
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
     # Initialize extensions with app
     db.init_app(app)
