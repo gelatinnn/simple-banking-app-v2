@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
@@ -9,6 +9,7 @@ import secrets
 import pymysql
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter.errors import RateLimitExceeded
+from wtforms import ValidationError
 
 # Import extensions
 from extensions import db, login_manager, bcrypt, limiter
@@ -58,6 +59,9 @@ def create_app():
     app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access
     app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'  # Prevent CSRF via cross-site requests
 
+    # Set session timeout (30 minutes of inactivity)
+    app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 1800 seconds = 30 minutes
+
     # Initialize extensions with app
     db.init_app(app)
     login_manager.init_app(app)
@@ -81,6 +85,10 @@ def create_app():
     def internal_error(error):
         return render_template('500.html'), 500
 
+    @app.before_request
+    def make_session_permanent():
+        session.permanent = True
+
     return app
 
 # Create Flask app
@@ -95,6 +103,22 @@ def load_user(user_id):
 
 # Import routes after app creation
 from routes import *
+
+# Password policy validator
+import re
+
+def validate_password_strength(form, field):
+    password = field.data
+    if len(password) < 8:
+        raise ValidationError('Password must be at least 8 characters long.')
+    if not re.search(r'[A-Z]', password):
+        raise ValidationError('Password must contain at least one uppercase letter.')
+    if not re.search(r'[a-z]', password):
+        raise ValidationError('Password must contain at least one lowercase letter.')
+    if not re.search(r'[0-9]', password):
+        raise ValidationError('Password must contain at least one digit.')
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        raise ValidationError('Password must contain at least one special character.')
 
 # Database initialization function
 def init_db():
