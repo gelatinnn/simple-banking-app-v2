@@ -265,7 +265,7 @@ def init_flask_app_db():
                 deactivated_user = User.query.filter_by(username="deactivateduser").first()
                 if not deactivated_user:
                     deactivated_user = User(
-                        username="deactivateduser",
+                        username="deactivateudser",
                         email="deactivated@example.com",
                         account_number="5678901234",
                         status="deactivated",  # Deactivated for testing
