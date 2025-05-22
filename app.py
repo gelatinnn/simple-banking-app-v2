@@ -73,7 +73,7 @@ def create_app():
     app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'  # Prevent CSRF via cross-site requests
 
     # Set session timeout (30 minutes of inactivity)
-    app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 1800 seconds = 30 minutes
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
     # Initialize extensions with app
     db.init_app(app)
