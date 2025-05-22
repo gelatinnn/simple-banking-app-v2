@@ -73,6 +73,14 @@ def create_app():
         # Otherwise, return the HTML template
         return render_template('rate_limit_error.html', message=str(e)), 429
 
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return render_template('404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        return render_template('500.html'), 500
+
     return app
 
 # Create Flask app
