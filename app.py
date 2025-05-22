@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
@@ -90,6 +90,15 @@ def create_app():
     def internal_error(error):
         flash('An unexpected error occurred. Please try again later.', 'danger')
         return render_template('500.html'), 500
+
+    # Set security headers for all responses
+    @app.after_request
+    def set_security_headers(response):
+        response.headers['Content-Security-Policy'] = "default-src 'self'; style-src 'self' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; script-src 'self' https://cdn.jsdelivr.net;"
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['Referrer-Policy'] = 'no-referrer'
+        response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+        return response
 
     @app.before_request
     def make_session_permanent():
