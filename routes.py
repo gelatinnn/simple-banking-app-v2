@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
-from app import app, csrf
+from app import app, csrf, audit_log
 from extensions import db, limiter
 from forms import LoginForm, RegistrationForm, TransferForm, ResetPasswordRequestForm, ResetPasswordForm, DepositForm, UserEditForm, ConfirmTransferForm
 from models import User, Transaction
@@ -81,9 +81,11 @@ def login():
                 # Continue with login
             else:
                 flash('Invalid username or password. Please try again.', 'danger')
+                audit_log(f"Failed login attempt for username: {form.username.data}")
                 return redirect(url_for('login'))
         elif user is None or not user.check_password(form.password.data):
             flash('Invalid username or password. Please try again.', 'danger')
+            audit_log(f"Failed login attempt for username: {form.username.data}")
             return redirect(url_for('login'))
         
         # Check if user account is active (unless they're an admin or manager)
@@ -92,10 +94,12 @@ def login():
                 flash('Your account is awaiting approval from an administrator.')
             else:  # deactivated
                 flash('Your account has been deactivated. Please contact an administrator.')
+            audit_log(f"Login attempt for inactive account: {user.username}")
             return redirect(url_for('login'))
             
         login_user(user, remember=True)
         flash('Login successful! Welcome back.', 'success')
+        audit_log(f"User logged in: {user.username}")
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
@@ -104,6 +108,7 @@ def login():
 
 @app.route('/logout')
 def logout():
+    audit_log(f"User logged out: {current_user.username}")
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
@@ -203,19 +208,23 @@ def execute_transfer():
         
         if recipient is None:
             flash('Recipient not found.')
+            audit_log(f"Failed transfer attempt by {current_user.username}: recipient not found.")
             return redirect(url_for('transfer'))
         
         # Check if recipient account is active
         if recipient.status != 'active' and not recipient.is_admin and not recipient.is_manager:
             flash('The recipient account is not active.')
+            audit_log(f"Failed transfer attempt by {current_user.username}: recipient {recipient.username} not active.")
             return redirect(url_for('transfer'))
         
         if current_user.transfer_money(recipient, amount):
             db.session.commit()
             flash(f'Successfully transferred ₱{amount:.2f} to {recipient.username}', 'success')
+            audit_log(f"Transfer completed by {current_user.username} to {recipient.username} for ₱{amount:.2f}")
             return redirect(url_for('account'))
         else:
             flash('Transfer failed. Please check your balance.')
+            audit_log(f"Failed transfer by {current_user.username}: insufficient funds.")
             return redirect(url_for('transfer'))
     
     return redirect(url_for('transfer'))
@@ -320,6 +329,7 @@ def create_account():
         db.session.add(user)
         db.session.commit()
         flash('User account has been created.', 'success')
+        audit_log(f"Admin {current_user.username} created user account: {user.username}")
         return redirect(url_for('admin_dashboard'))
     return render_template('admin/create_account.html', title='Create User Account', form=form)
 
@@ -645,6 +655,7 @@ def create_admin():
         db.session.add(admin)
         db.session.commit()
         flash('Admin account has been created', 'success')
+        audit_log(f"Manager {current_user.username} created admin account: {admin.username}")
         return redirect(url_for('admin_list'))
     return render_template('manager/create_admin.html', title='Create Admin Account', form=form)
 

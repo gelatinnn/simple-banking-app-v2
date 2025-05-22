@@ -1,11 +1,15 @@
 import os
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
+import logging
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session, current_app
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from itsdangerous import URLSafeTimedSerializer
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter.errors import RateLimitExceeded
+import pymysql
+import secrets
+from datetime import timedelta
 
 # Import extensions
 from extensions import db, login_manager, bcrypt, limiter
@@ -18,6 +22,19 @@ csrf = CSRFProtect()
 
 # MySQL connection
 pymysql.install_as_MySQLdb()
+
+# Set up audit logging
+logging.basicConfig(
+    filename='audit.log',
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+# Helper function for audit logging
+
+def audit_log(message):
+    logging.info(message)
 
 # Step 1: Create Flask application with secure session management
 def create_app():
