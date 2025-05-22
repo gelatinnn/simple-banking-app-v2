@@ -1,15 +1,11 @@
 import os
-import secrets
-import pymysql
-import datetime
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from itsdangerous import URLSafeTimedSerializer
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter.errors import RateLimitExceeded
-from datetime import timedelta
 
 # Import extensions
 from extensions import db, login_manager, bcrypt, limiter
@@ -54,6 +50,14 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    # Set secure cookie flags for session cookies
+    app.config['SESSION_COOKIE_SECURE'] = True  # Only send cookies over HTTPS
+    app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'  # Prevent CSRF via cross-site requests
+
+    # Set session timeout (30 minutes of inactivity)
+    app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 1800 seconds = 30 minutes
+
     # Initialize extensions with app
     db.init_app(app)
     login_manager.init_app(app)
@@ -66,6 +70,18 @@ def create_app():
         if request.path.startswith('/api/') or request.headers.get('Accept') == 'application/json':
             return jsonify({"error": "Rate limit exceeded", "message": str(e)}), 429
         return render_template('rate_limit_error.html', message=str(e)), 429
+
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return render_template('404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        return render_template('500.html'), 500
+
+    @app.before_request
+    def make_session_permanent():
+        session.permanent = True
 
     return app
 
@@ -88,7 +104,7 @@ def load_user(user_id):
 # Step 6: Import routes after app creation
 from routes import *
 
-# Step 7: Database initialization function
+# Database initialization function
 def init_db():
     """Initialize the database with required tables and default admin user."""
     with app.app_context():
@@ -109,7 +125,6 @@ def init_db():
             db.session.commit()
             print("Created admin user with username 'admin' and password 'admin123'")
 
-# Step 8: Run the app
 if __name__ == '__main__':
     # Print environment variables for debugging
     print(f"Environment variables:")

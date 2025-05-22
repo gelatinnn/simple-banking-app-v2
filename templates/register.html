@@ -30,6 +30,9 @@
                         {% for error in form.password.errors %}
                         <div class="text-danger">{{ error }}</div>
                         {% endfor %}
+                        <div class="form-text">
+                            Password must be at least 8 characters, include uppercase, lowercase, a digit, and a special character.
+                        </div>
                     </div>
                     <div class="mb-3">
                         {{ form.password2.label(class="form-label") }}
@@ -49,4 +52,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
