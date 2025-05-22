@@ -121,6 +121,15 @@ def create_app():
     def make_session_permanent():
         session.permanent = True
 
+    # --- Privacy Policy and Terms of Service routes ---
+    @app.route('/privacy-policy')
+    def privacy_policy():
+        return render_template('privacy_policy.html', title='Privacy Policy')
+
+    @app.route('/terms-of-service')
+    def terms_of_service():
+        return render_template('terms_of_service.html', title='Terms of Service')
+
     return app
 
 # Step 2: Create Flask app
