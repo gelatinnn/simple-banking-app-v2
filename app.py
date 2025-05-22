@@ -1,6 +1,9 @@
 import os
+<<<<<<< HEAD
 import secrets
 import pymysql
+=======
+>>>>>>> 74c126ddc5d54ddfcb220bb687378309d61845a6
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -74,13 +77,34 @@ def create_app():
             return jsonify({"error": "Rate limit exceeded", "message": str(e)}), 429
         return render_template('rate_limit_error.html', message=str(e)), 429
 
+    @app.errorhandler(400)
+    def bad_request_error(error):
+        flash('Bad request. Please check your input and try again.', 'warning')
+        return render_template('400.html'), 400
+
+    @app.errorhandler(403)
+    def forbidden_error(error):
+        flash('You do not have permission to access this resource.', 'warning')
+        return render_template('403.html'), 403
+
     @app.errorhandler(404)
     def not_found_error(error):
+        flash('The page you are looking for was not found.', 'warning')
         return render_template('404.html'), 404
 
     @app.errorhandler(500)
     def internal_error(error):
+        flash('An unexpected error occurred. Please try again later.', 'danger')
         return render_template('500.html'), 500
+
+    # Set security headers for all responses
+    @app.after_request
+    def set_security_headers(response):
+        response.headers['Content-Security-Policy'] = "default-src 'self'; style-src 'self' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; script-src 'self' https://cdn.jsdelivr.net;"
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['Referrer-Policy'] = 'no-referrer'
+        response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+        return response
 
     @app.before_request
     def make_session_permanent():
