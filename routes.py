@@ -80,10 +80,10 @@ def login():
                 db.session.commit()
                 # Continue with login
             else:
-                flash('Invalid username or password')
+                flash('Invalid username or password. Please try again.', 'danger')
                 return redirect(url_for('login'))
         elif user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash('Invalid username or password. Please try again.', 'danger')
             return redirect(url_for('login'))
         
         # Check if user account is active (unless they're an admin or manager)
@@ -94,7 +94,8 @@ def login():
                 flash('Your account has been deactivated. Please contact an administrator.')
             return redirect(url_for('login'))
             
-        login_user(user)
+        login_user(user, remember=True)
+        flash('Login successful! Welcome back.', 'success')
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
@@ -104,6 +105,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
+    flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -117,7 +119,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been registered and is awaiting admin approval.')
+        flash('Registration successful! Please wait for admin approval.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -210,7 +212,7 @@ def execute_transfer():
         
         if current_user.transfer_money(recipient, amount):
             db.session.commit()
-            flash(f'Successfully transferred ₱{amount:.2f} to {recipient.username}')
+            flash(f'Successfully transferred ₱{amount:.2f} to {recipient.username}', 'success')
             return redirect(url_for('account'))
         else:
             flash('Transfer failed. Please check your balance.')
@@ -228,7 +230,7 @@ def reset_password_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
-        flash('Check your email for instructions to reset your password')
+        flash('Password reset email sent. Please check your inbox.', 'info')
         return redirect(url_for('login'))
     return render_template('reset_password_request.html', title='Reset Password', form=form)
 
@@ -254,7 +256,7 @@ def reset_password(token):
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        flash('Your password has been reset.')
+        flash('Your password has been reset successfully. Please log in.', 'success')
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)
 
@@ -287,7 +289,7 @@ def activate_user(user_id):
         
     user.status = 'active'
     db.session.commit()
-    flash(f'Account {user.username} has been activated.')
+    flash(f'Account {user.username} has been activated.', 'success')
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/deactivate_user/<int:user_id>')
@@ -303,7 +305,7 @@ def deactivate_user(user_id):
         
     user.status = 'deactivated'
     db.session.commit()
-    flash(f'Account {user.username} has been deactivated.')
+    flash(f'Account {user.username} has been deactivated.', 'warning')
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/create_account', methods=['GET', 'POST'])
@@ -317,7 +319,7 @@ def create_account():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('User account has been created.')
+        flash('User account has been created.', 'success')
         return redirect(url_for('admin_dashboard'))
     return render_template('admin/create_account.html', title='Create User Account', form=form)
 
@@ -350,7 +352,7 @@ def admin_deposit():
         # Call deposit method
         if user.deposit(amount, current_user):
             db.session.commit()
-            flash(f'Successfully deposited ₱{amount:.2f} to {user.username}')
+            flash(f'Successfully deposited ₱{amount:.2f} to {user.username}', 'success')
             return redirect(url_for('admin_dashboard'))
         else:
             flash('Deposit failed.')
@@ -567,7 +569,7 @@ def edit_user(user_id):
             db.session.add(transaction)
         
         db.session.commit()
-        flash(f'User information for {user.username} has been updated.')
+        flash(f'User information for {user.username} has been updated.', 'success')
         return redirect(url_for('admin_dashboard'))
     
     return render_template('admin/edit_user.html', title='Edit User', form=form, user=user)
@@ -642,7 +644,7 @@ def create_admin():
         admin.set_password(form.password.data)
         db.session.add(admin)
         db.session.commit()
-        flash('Admin account has been created')
+        flash('Admin account has been created', 'success')
         return redirect(url_for('admin_list'))
     return render_template('manager/create_admin.html', title='Create Admin Account', form=form)
 
@@ -666,11 +668,11 @@ def toggle_admin(user_id):
     # If promoting to admin, ensure account is active
     if user.is_admin:
         user.status = 'active'  # Set status to active when promoting to admin
-        flash(f'User {user.username} has been promoted to admin.')
+        flash(f'User {user.username} has been promoted to admin.', 'success')
         db.session.commit()
         return redirect(url_for('user_list'))
     else:
-        flash(f'User {user.username} has been demoted from admin.')
+        flash(f'User {user.username} has been demoted from admin.', 'warning')
         db.session.commit()
         return redirect(url_for('admin_list'))
 
@@ -907,4 +909,9 @@ def manager_transfers():
     return render_template('manager/transfers.html', 
                          title='Transfer Transactions', 
                          transactions=transactions,
-                         users=users) 
+                         users=users)
+
+@app.errorhandler(500)
+def internal_error(error):
+    flash('An unexpected error occurred. Please try again later.', 'danger')
+    return render_template('500.html'), 500

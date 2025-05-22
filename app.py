@@ -141,6 +141,16 @@ def init_db():
             db.session.commit()
             print("Created admin user with username 'admin' and password 'admin123'")
 
+# Enhance user notification messages for login, logout, transfer, password reset, registration, and errors
+# (Implementation is in routes.py, but here is a reminder to ensure all critical actions use clear flash messages)
+# Example usage in routes.py:
+# flash('Login successful! Welcome back.', 'success')
+# flash('You have been logged out.', 'info')
+# flash('Transfer completed successfully.', 'success')
+# flash('Password reset email sent. Please check your inbox.', 'info')
+# flash('Registration successful! Please wait for admin approval.', 'success')
+# flash('An error occurred. Please try again.', 'danger')
+
 if __name__ == '__main__':
     # Print environment variables for debugging
     print(f"Environment variables:")
