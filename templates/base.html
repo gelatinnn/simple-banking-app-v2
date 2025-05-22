@@ -79,14 +79,16 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top" role="navigation" aria-label="Main Navigation">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top shadow-sm" role="navigation" aria-label="Main Navigation">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}" aria-label="IMT BANK Home">IMT BANK</a>
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('index') }}" aria-label="IMT BANK Home">
+                <i class="bi bi-bank2" style="font-size: 1.5rem;"></i> IMT BANK
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('about') }}" aria-label="About">About</a>
                     </li>
@@ -123,31 +125,31 @@
                 </ul>
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <span class="nav-link" aria-label="Current user: {{ current_user.username }}">
-                            {{ current_user.username }}
+                    <li class="nav-item d-flex align-items-center">
+                        <span class="nav-link fw-semibold" aria-label="Current user: {{ current_user.username }}">
+                            <i class="bi bi-person-circle me-1"></i>{{ current_user.username }}
                             {% if current_user.is_manager %}
-                            <span class="badge bg-danger account-badge" aria-label="Manager">Manager</span>
+                            <span class="badge bg-danger account-badge ms-2" aria-label="Manager">Manager</span>
                             {% elif current_user.is_admin %}
-                            <span class="badge bg-warning text-dark account-badge" aria-label="Admin">Admin</span>
+                            <span class="badge bg-warning text-dark account-badge ms-2" aria-label="Admin">Admin</span>
                             {% elif current_user.status == 'active' %}
-                            <span class="badge bg-success account-badge" aria-label="Active">Active</span>
+                            <span class="badge bg-success account-badge ms-2" aria-label="Active">Active</span>
                             {% elif current_user.status == 'deactivated' %}
-                            <span class="badge bg-danger account-badge" aria-label="Deactivated">Deactivated</span>
+                            <span class="badge bg-danger account-badge ms-2" aria-label="Deactivated">Deactivated</span>
                             {% else %}
-                            <span class="badge bg-secondary account-badge" aria-label="Pending">Pending</span>
+                            <span class="badge bg-secondary account-badge ms-2" aria-label="Pending">Pending</span>
                             {% endif %}
                         </span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}" aria-label="Logout">Logout</a>
+                        <a class="nav-link" href="{{ url_for('logout') }}" aria-label="Logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}" aria-label="Login">Login</a>
+                        <a class="nav-link" href="{{ url_for('login') }}" aria-label="Login"><i class="bi bi-box-arrow-in-right"></i> Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register') }}" aria-label="Register">Register</a>
+                        <a class="nav-link" href="{{ url_for('register') }}" aria-label="Register"><i class="bi bi-person-plus"></i> Register</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -160,8 +162,8 @@
         {% if messages %}
         <div class="flash-messages" aria-live="polite">
             {% for message in messages %}
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                {{ message }}
+            <div class="alert alert-info alert-dismissible fade show shadow-sm" role="alert">
+                <i class="bi bi-info-circle me-2"></i>{{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             {% endfor %}
@@ -173,13 +175,13 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer" role="contentinfo">
+    <footer class="footer mt-auto py-4 bg-dark text-white" role="contentinfo">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4 mb-md-0">
-                    <h5>IMT BANK</h5>
+                    <h5 class="fw-bold">IMT BANK</h5>
                     <p class="mb-3">A secure and user-friendly banking application designed for simplicity and reliability.</p>
-                    <div class="social-icons" aria-label="Social Media Links">
+                    <div class="social-icons d-flex gap-2" aria-label="Social Media Links">
                         <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
                         <a href="#" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
                         <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
@@ -187,7 +189,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-4 mb-md-0">
-                    <h5>Quick Links</h5>
+                    <h5 class="fw-bold">Quick Links</h5>
                     <ul class="list-unstyled">
                         <li><a href="{{ url_for('about') }}" aria-label="About Us">About Us</a></li>
                         {% if current_user.is_authenticated %}
@@ -200,7 +202,7 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>Contact</h5>
+                    <h5 class="fw-bold">Contact</h5>
                     <ul class="list-unstyled">
                         <li><i class="bi bi-geo-alt-fill me-2"></i> 321 Banker Street, Finance District</li>
                         <li><i class="bi bi-envelope-fill me-2"></i> aribias@my.cspc.edu.ph</li>
