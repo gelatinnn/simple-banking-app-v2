@@ -2,9 +2,32 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, FloatField, RadioField, SelectField, HiddenField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, NumberRange, Optional
 from models import User
+import re
+
+# --- Custom Validators ---
+
+def strong_password(form, field):
+    password = field.data
+    if len(password) < 8:
+        raise ValidationError('Password must be at least 8 characters long.')
+    if not re.search(r'[A-Z]', password):
+        raise ValidationError('Password must contain at least one uppercase letter.')
+    if not re.search(r'[a-z]', password):
+        raise ValidationError('Password must contain at least one lowercase letter.')
+    if not re.search(r'[0-9]', password):
+        raise ValidationError('Password must contain at least one digit.')
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        raise ValidationError('Password must contain at least one special character.')
+
+def valid_username(form, field):
+    username = field.data
+    if not re.match(r'^[A-Za-z0-9_]+$', username):
+        raise ValidationError('Username must contain only letters, numbers, and underscores.')
+
+# --- Forms ---
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired(), valid_username])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
@@ -12,9 +35,9 @@ class LoginForm(FlaskForm):
         return super(LoginForm, self).validate()
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired(), valid_username])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired(), strong_password])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
@@ -36,7 +59,7 @@ class TransferForm(FlaskForm):
     transfer_type = RadioField('Transfer Type', 
                               choices=[('username', 'By Username'), ('account', 'By Account Number')],
                               default='username')
-    recipient_username = StringField('Recipient Username', validators=[Optional()])
+    recipient_username = StringField('Recipient Username', validators=[Optional(), valid_username])
     recipient_account = StringField('Recipient Account Number', validators=[Optional()])
     amount = FloatField('Amount', validators=[DataRequired(), NumberRange(min=0.01, message="Amount must be greater than 0")])
     submit = SubmitField('Transfer')
@@ -81,7 +104,7 @@ class ResetPasswordRequestForm(FlaskForm):
         return super(ResetPasswordRequestForm, self).validate()
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('New Password', validators=[DataRequired()])
+    password = PasswordField('New Password', validators=[DataRequired(), strong_password])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
@@ -156,4 +179,4 @@ class ConfirmTransferForm(FlaskForm):
     recipient_account = HiddenField('Recipient Account Number')
     amount = HiddenField('Amount')
     transfer_type = HiddenField('Transfer Type')
-    submit = SubmitField('Confirm Transfer') 
+    submit = SubmitField('Confirm Transfer')
