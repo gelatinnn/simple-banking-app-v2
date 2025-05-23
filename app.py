@@ -63,7 +63,7 @@ def create_app():
         print(f"WARNING: Missing database configuration. Host: {mysql_host}, User: {mysql_user}, Database: {mysql_database}")
 
     db_uri = f"mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
-    print(f"Database URI: {db_uri}")
+ 
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -173,8 +173,8 @@ def init_db():
             print("Created admin user with username 'admin' and password 'admin123'")
 
 if __name__ == '__main__':
-    # Print environment variables for debugging
-    print(f"Environment variables:")
+    print("\nApp running at: http://localhost:5000\n")
+
     print(f"MYSQL_HOST: {os.environ.get('MYSQL_HOST')}")
     print(f"MYSQL_USER: {os.environ.get('MYSQL_USER')}")
     print(f"MYSQL_DATABASE: {os.environ.get('MYSQL_DATABASE')}")
@@ -182,3 +182,5 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+
+    
