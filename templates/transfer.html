@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6 offset-md-3">
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="w-100" style="max-width: 600px;">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header text-center">
                 <h4>Transfer Money</h4>
             </div>
             <div class="card-body">
-                <div class="alert alert-info">
+                <div class="alert alert-info text-center">
                     Your current balance: <strong>₱{{ "%.2f"|format(current_user.balance) }}</strong>
                 </div>
                 
@@ -94,4 +94,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-{% endblock %} 
+{% endblock %}

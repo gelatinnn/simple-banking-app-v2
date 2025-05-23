@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
-    <div class="col-lg-8 offset-lg-2">
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="w-100" style="max-width: 900px;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Edit User: {{ user.username }}</h2>
-            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary">Back to Dashboard</a>
+            <h2 class="text-center w-100">Edit User: {{ user.username }}</h2>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary d-none d-md-block">Back to Dashboard</a>
         </div>
         
         <div class="card">
@@ -272,4 +272,4 @@
         });
     });
 </script>
-{% endblock %} 
+{% endblock %}

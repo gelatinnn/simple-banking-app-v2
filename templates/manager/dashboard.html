@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
-    <div class="col-lg-10 offset-lg-1">
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="w-100" style="max-width: 1200px;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Manager Dashboard</h2>
-            <div>
+            <h2 class="text-center w-100">Manager Dashboard</h2>
+            <div class="d-none d-md-block">
                 <a href="{{ url_for('create_admin') }}" class="btn btn-primary me-2">Create Admin Account</a>
                 <a href="{{ url_for('user_list') }}" class="btn btn-outline-primary me-2">View All Users</a>
                 <a href="{{ url_for('admin_list') }}" class="btn btn-outline-warning me-2">View All Admins</a>
@@ -52,28 +52,20 @@
                                     {% elif admin.status == 'deactivated' %}
                                     <span class="badge bg-danger">Deactivated</span>
                                     {% else %}
-                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    <span class="badge bg-secondary">Pending</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ admin.date_registered.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ admin.date_registered.strftime('%Y-%m-%d') if admin.date_registered else '' }}</td>
                                 <td>
-                                    <a href="{{ url_for('toggle_admin', user_id=admin.id) }}" class="btn btn-sm btn-warning">
-                                        Remove Admin Role
-                                    </a>
+                                    <a href="{{ url_for('edit_user', user_id=admin.id) }}" class="btn btn-sm btn-warning">Edit</a>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                
-                {% if not admins %}
-                <div class="text-center p-4">
-                    <p class="text-muted">No admin accounts found.</p>
-                </div>
-                {% endif %}
             </div>
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

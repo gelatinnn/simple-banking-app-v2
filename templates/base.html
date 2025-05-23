@@ -80,6 +80,24 @@
             margin-left: 5px;
         }
     </style>
+    <script>
+        // Sticky footer hide on scroll down, show on scroll up
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', function() {
+            const footer = document.querySelector('footer.footer');
+            let st = window.pageYOffset || document.documentElement.scrollTop;
+            if (st > lastScrollTop) {
+                // Scroll Down
+                footer.style.transform = 'translateY(100%)';
+                footer.style.transition = 'transform 0.3s';
+            } else {
+                // Scroll Up
+                footer.style.transform = 'translateY(0)';
+                footer.style.transition = 'transform 0.3s';
+            }
+            lastScrollTop = st <= 0 ? 0 : st;
+        }, false);
+    </script>
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top shadow-sm" role="navigation" aria-label="Main Navigation">
