@@ -9,6 +9,21 @@
                     <h4 class="mb-0">Sign In</h4>
                 </div>
                 <div class="card-body">
+
+                    <!-- General flash/error messages -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div aria-live="polite">
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category in ['error','danger'] else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+
                     <form method="post" novalidate>
                         {{ form.hidden_tag() }}
                         <div class="mb-3">
