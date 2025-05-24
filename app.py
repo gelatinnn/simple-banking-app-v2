@@ -171,7 +171,7 @@ def init_db():
             db.session.add(admin_user)
             db.session.commit()
             print("Created admin user with username 'admin' and password 'admin123'")
-'''
+
 if __name__ == '__main__':
     print("\nApp running at: http://localhost:5000\n")
 
@@ -182,5 +182,5 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
-'''
+
     
