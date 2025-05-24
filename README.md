@@ -1,6 +1,52 @@
-# Simple Banking App
+# IMT Bank
+
+[Live Demo on PythonAnywhere](https://wejasa1637.pythonanywhere.com/login?next=%2F )
 
 A user-friendly and responsive Flask-based banking application designed for deployment on PythonAnywhere. This application allows users to create accounts, perform simulated money transfers between accounts, view transaction history, and securely manage their credentials.
+
+---
+
+## Table of Contents
+- [New Security Features & Enhancements (2025)](#new-security-features--enhancements-2025)
+- [Group Members](#group-members)
+- [Features](#features)
+- [Security Overview](#security-overview)
+- [Automated Security Assessment Scripts](#automated-security-assessment-scripts)
+- [Getting Started](#getting-started)
+- [Database Setup](#database-setup)
+- [How to Use Security Scripts](#how-to-use-security-scripts)
+- [Deploying to PythonAnywhere](#deploying-to-pythonanywhere)
+- [Usage](#usage)
+- [User Roles](#user-roles)
+- [Address Management](#address-management)
+- [Technologies Used](#technologies-used)
+- [Rate Limiting](#rate-limiting)
+- [License](#license)
+
+---
+
+
+## New Security Features & Enhancements (2025)
+- Strong password policy (min 8 chars, upper/lowercase, number, special char)
+- CSRF protection for all forms (Flask-WTF)
+- Session security: Secure, HttpOnly, SameSite cookies; 30-min inactivity logout
+- Rate limiting on login, registration, and sensitive endpoints (Flask-Limiter)
+- Account lockout after multiple failed logins
+- Audit logging for critical actions
+- Custom error pages (400, 403, 404, 500)
+- Input validation and XSS protection (Jinja2 auto-escaping)
+- Admin/Manager dashboards for user and transaction management
+- Legal pages: Privacy Policy, Terms of Service
+- Accessibility improvements (ARIA roles, keyboard navigation)
+
+---
+
+## Group Members
+- Aron Ibias [AronIbias21]
+- Jester Tapit [TAPIT08]
+- Maria Angela Matubis[gelatinnn]
+
+---
 
 ## Features
 
@@ -45,12 +91,79 @@ A user-friendly and responsive Flask-based banking application designed for depl
   - Accessibility improvements (ARIA roles, labels, keyboard navigation)
   - User notifications for all critical actions (login, logout, transfer, registration, errors)
 
+---
+
+## Security Overview
+
+- Strong password policy and validation
+- Passwords hashed with bcrypt
+- Secure session management (cookie flags, timeout)
+- CSRF protection for all forms
+- Rate limiting on sensitive endpoints
+- Generic error handlers and user-friendly error pages
+- Jinja2 auto-escaping enforced
+- Secrets/credentials loaded from environment variables
+- Audit logging for sensitive actions
+- Clickjacking protection via headers
+
+---
+
+
 ## Getting Started
 
-1. Clone the repository and install dependencies from `requirements.txt`.
-2. Set up your `.env` file with MySQL and secret key settings.
-3. Run `python app.py` to start the development server.
-4. Access the app in your browser at `http://localhost:5000`.
+### Prerequisites
+- Python 3.7+
+- pip
+- MySQL Server 5.7+ or MariaDB 10.2+
+
+### Installation
+1. **Clone the repository:**
+   ```
+   git clone https://github.com/gelatinnn/simple-banking-app-v2.git
+   cd simple-banking-app-v2
+   ```
+2. **Install required packages:**
+   ```
+   pip install -r requirements.txt
+   ```
+3. **Set up your `.env` file:**
+   ```
+   MYSQL_USER=your_mysql_user
+   MYSQL_PASSWORD=your_mysql_password
+   MYSQL_HOST=localhost
+   MYSQL_PORT=3306
+   MYSQL_DATABASE=simple_banking
+   SECRET_KEY=your_secret_key
+   ```
+4. **Initialize the database:**
+   ```
+   python init_db.py
+   ```
+5. **Run the application:**
+   ```
+   python app.py
+   ```
+6. **Access at:** `http://localhost:5000`
+
+---
+## Database Setup
+
+1. **Install MySQL Server or XAMPP (with MariaDB)**
+2. **Create a database user and set privileges:**
+   ```
+   mysql -u root -p
+   CREATE DATABASE simple_banking;
+   CREATE USER 'bankapp'@'localhost' IDENTIFIED BY 'your_password';
+   GRANT ALL PRIVILEGES ON simple_banking.* TO 'bankapp'@'localhost';
+   FLUSH PRIVILEGES;
+   EXIT;
+   ```
+3. **Update the `.env` file** as shown above.
+4. **Initialize the database:**
+   ```
+   python init_db.py
+   ```
+---
 
 ## Usage
 
@@ -170,3 +283,20 @@ If Redis is not available, the application will automatically fall back to in-me
 ## License
 
 MIT License
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
