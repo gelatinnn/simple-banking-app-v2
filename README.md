@@ -42,9 +42,9 @@ A user-friendly and responsive Flask-based banking application designed for depl
 ---
 
 ## Group Members
-- Aron Ibias [AronIbias21]
-- Jester Tapit [TAPIT08]
-- Maria Angela Matubis[gelatinnn]
+- Aron Ibias                      [AronIbias21]
+- Maria Angela Matubis            [gelatinnn]
+- Jester Carlo Tapit              [TAPIT08]
 
 ---
 
